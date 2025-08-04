@@ -1,0 +1,275 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+:root {
+  /* ======== Colors ======== */
+  --yellow-color: 52;
+  --green-color: 116;
+  --pink-color: 300;
+  --white-color: hsl(0, 0%, 100%);
+  --black-color: hsl(0, 0%, 0%);
+
+  /* ======== Font and typography ======== */
+  --body-font: "Poppins", sans-serif;
+  --biggest-font-size: 2rem;
+  --big-font-size: 1.5rem;
+  --normal-font-size: 0.938rem;
+  --small-font-size: 0.813rem;
+
+  /* ======== Font weight ======== */
+  --font-regular: 400;
+  --font-semi-bold: 600;
+  --font-bold: 700;
+}
+
+/* ======== RESPONSIVE TYPOGRAPHY ======== */
+@media screen and (min-width: 1150px) {
+  :root {
+    --biggest-font-size: 3rem;
+    --big-font-size: 2.5rem;
+    --normal-font-size: 1rem;
+    --small-font-size: 0.875rem;
+  }
+}
+
+/* ======== BASE ======== */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+}
+
+body {
+  font-family: var(--body-font);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ======== REUSABLE CSS CLASSES ======== */
+.container {
+  max-width: 1120px;
+  margin-inline: 1.5rem;
+}
+
+.card-yellow {
+  --hue: var(--yellow-color);
+}
+
+.card-green {
+  --hue: var(--green-color);
+}
+
+.card-pink {
+  --hue: var(--pink-color);
+}
+
+/* ======== CARD ======== */
+.card {
+  position: relative;
+  padding-block: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.card__bg,
+.card__blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.card__bg {
+  object-fit: cover;
+  object-position: center;
+}
+
+.card__blur {
+  backdrop-filter: blur(24px);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.card__container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  justify-content: center;
+  gap: 2rem;
+  max-width: 900px;
+}
+
+.card__article {
+  position: relative;
+  border-radius: 2rem;
+  overflow: hidden;
+  height: 400px; /* Fixed height for consistency */
+  width: 260px;
+  margin: 0 auto;
+}
+
+.card__img {
+  border-radius: 2rem;
+  transition: transform 0.4s;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.card__shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    hsla(0, 0%, 0%, 0) 70%,
+    hsl(0, 0%, 0%) 100%
+  );
+}
+
+.card__data {
+  color: var(--white-color);
+  position: absolute;
+  left: 1.5rem;
+  bottom: 2rem;
+  z-index: 2;
+}
+
+.card__name {
+  font-size: var(--big-font-size);
+  margin-bottom: 0.25rem;
+  font-weight: var(--font-bold);
+}
+
+.card__profession {
+  display: block;
+  font-size: var(--normal-font-size);
+  opacity: 0.9;
+}
+
+.card__clip {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: hsl(var(--hue), 90%, 50%);
+  box-shadow: 0 0 16px 4px hsl(var(--hue), 90%, 50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  place-items: center;
+  display: grid;
+  font-size: 1.5rem;
+  color: var(--black-color);
+  z-index: 5;
+  cursor: pointer;
+  transition: transform 0.4s;
+}
+
+.card__article:hover .card__img {
+  transform: scale(1.1);
+}
+
+/* ========  CARD INFO ======== */
+.info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: hsla(0, 0%, 0%, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 3rem 1.5rem 1.5rem;
+  color: var(--white-color);
+  clip-path: circle(8px at 88% 9%);
+  transition: clip-path 0.5s ease-in-out;
+  z-index: 3;
+}
+
+.info__name {
+  font-size: var(--biggest-font-size);
+  margin-block-end: 0.5rem;
+  font-weight: var(--font-bold);
+}
+
+.info__description {
+  font-size: var(--small-font-size);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.info__button {
+  display: inline-flex;
+  background-color: hsl(var(--hue), 90%, 50%);
+  box-shadow: 0 0 12px hsl(var(--hue), 90%, 50%);
+  padding: 0.5rem 0.75rem;
+  color: var(--black-color);
+  font-weight: var(--font-semi-bold);
+  transition: box-shadow 0.4s;
+  border-radius: 0.5rem;
+}
+
+.info__button:hover {
+  box-shadow: 0 0 20px hsl(var(--hue), 90%, 50%);
+}
+
+.info__social {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 1.5rem;
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.info__link {
+  background-color: hsl(var(--hue), 90%, 50%);
+  box-shadow: 0 0 12px hsl(var(--hue), 90%, 90%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.75rem;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--black-color);
+  transition: transform 0.4s;
+}
+
+.info__link:hover {
+  transform: translateY(-0.25rem);
+}
+
+/* ROTATE ICON */
+.card__article:hover .card__clip {
+  transform: rotate(-45deg);
+}
+
+/* clip path animation */
+.info:hover,
+.card__clip:hover ~ .info {
+  clip-path: circle(100%);
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .card__container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .card__article {
+    width: 100%;
+    max-width: 300px;
+  }
+}

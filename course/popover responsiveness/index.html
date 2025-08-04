@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Popover</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <div class="menu-card">
+      <!-- Method 1: JavaScript Toggle -->
+      <button type="button" id="profileBtn">
+        <span>VD</span>
+      </button>
+
+      <!-- Custom JavaScript Popover -->
+      <div class="profile-menu" id="profileMenu">
+        <div class="profile-header">
+          <div class="profile-avatar">KP</div>
+          <div class="profile-info">
+            <div class="profile-name">UserName838</div>
+            <div class="profile-email">email@address.com</div>
+          </div>
+        </div>
+        <div class="menu-item">Manage Account</div>
+        <div class="menu-item">Sign out</div>
+      </div>
+    </div>
+
+    <script>
+      // Method 1: Custom JavaScript Implementation
+      const profileBtn = document.getElementById("profileBtn");
+      const profileMenu = document.getElementById("profileMenu");
+
+      // Toggle popover on button click
+      profileBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        profileMenu.classList.toggle("show");
+      });
+
+      // Close popover when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
+          profileMenu.classList.remove("show");
+        }
+      });
+
+      // Close popover on Escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          profileMenu.classList.remove("show");
+        }
+      });
+
+      // Handle menu item clicks
+      const menuItems = document.querySelectorAll(".menu-item");
+      menuItems.forEach((item) => {
+        item.addEventListener("click", () => {
+          console.log("Menu item clicked:", item.textContent);
+          profileMenu.classList.remove("show");
+          // Add your action logic here
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<!-- Method 2: Native Popover API (if you prefer) -->
+<!-- 
+    <div class="menu-card" style="margin-top: 50px;">
+      <button type="button" popovertarget="nativePopover">
+        <span>NP</span>
+      </button>
+      
+      <div class="profile-menu-native" popover="auto" id="nativePopover">
+        <div class="profile-header">
+          <div class="profile-avatar">KP</div>
+          <div class="profile-info">
+            <div class="profile-name">UserName838</div>
+            <div class="profile-email">email@address.com</div>
+          </div>
+        </div>
+        <div class="menu-item">Manage Account</div>
+        <div class="menu-item">Sign out</div>
+      </div>
+    </div>
+    -->

@@ -1,0 +1,55 @@
+:root {
+  --gradient: #ff512f, #dd2476;
+  --gradient-button-fill: white;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: purple;
+}
+
+.container {
+  width: 100%;
+  background-image: conic-gradient(hsl(0 0% 0% / 0.5) 0 0),
+    url("https://freerangestock.com/sample/97432/city-skyline-illuminated-by-night-lights-reflecting-in-water.jpg");
+  background-size: cover;
+  background-position: right;
+  mask: conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/60px 100%;
+  padding: 48px;
+  text-align: center;
+  color: white;
+}
+
+.button {
+  all: revert;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  text-decoration: none;  
+  cursor: pointer;
+  padding: 0.5em 1.5em;
+  color: black;
+  font-weight: 500;
+  transition: background-color 250ms ease;
+  border: 4px solid transparent;
+  user-select: none;
+  background: linear-gradient(var(--gradient-button-fill) 0 0) padding-box,
+    linear-gradient(-45deg, var(--gradient)) border-box;
+  transition: background 300ms ease, color 300ms ease;
+}
+
+.button:hover {
+  --gradient-button-fill: var(--gradient);
+  color: white;
+}
+
+.h1 {
+  text-transform: capitalize;
+}
+
+* {
+  all: revert;
+}

@@ -1,0 +1,17 @@
+/* _floating.scss */
+
+.floating-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.2;
+    animation: floatY 12s ease-in-out infinite alternate;
+  }
+
+  // You’ll place different .shape items with random sizes/positions below
+}

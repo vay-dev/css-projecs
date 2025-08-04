@@ -1,0 +1,133 @@
+.loading-container {
+  height: 100vh !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.liquid-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.img-con {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  z-index: 10;
+  overflow: hidden;
+  animation: liquidBob 2.5s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(3, 171, 255, 0.4);
+}
+
+.img-con::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle,
+    rgba(3, 171, 255, 0.3),
+    rgba(0, 212, 255, 0.3)
+  );
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.logo-spinner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  animation: logoSpin 6s linear infinite;
+  filter: brightness(0) saturate(100%) invert(47%) sepia(96%) saturate(1352%)
+    hue-rotate(184deg) brightness(101%) contrast(101%);
+}
+
+.wave {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px solid #03abff;
+  opacity: 0;
+  animation: waveExpand 3s ease-out infinite;
+}
+
+.wave:nth-child(2) {
+  animation-delay: 0.5s;
+  border-color: #00d4ff;
+}
+.wave:nth-child(3) {
+  animation-delay: 1s;
+  border-color: rgba(3, 171, 255, 0.7);
+}
+.wave:nth-child(4) {
+  animation-delay: 1.5s;
+  border-color: rgba(0, 212, 255, 0.5);
+}
+
+.loading-text {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #03abff;
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes liquidBob {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+@keyframes logoSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes waveExpand {
+  0% {
+    width: 70px;
+    height: 70px;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes textPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}

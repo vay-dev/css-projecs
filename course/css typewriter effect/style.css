@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+body {
+  height: 100vh;
+  background: rgb(56, 55, 55);
+}
+
+.typewriter {
+  display: flex;
+  justify-content: center;
+
+  p {
+    font-family: monospace;
+    font-size: 1.5rem;
+    color: #aaa;
+    font-weight: bold;
+    margin-inline: auto;
+    width: 22ch;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 1px solid #aaa;
+    animation: typing 3s steps(22) forwards, blink 1s step-end infinite;
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
