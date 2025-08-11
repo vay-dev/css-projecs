@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CombineLatest Visualization</title>
+    <style>
+      body {
+        font-family: "Courier New", monospace;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .title {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2em;
+        font-weight: bold;
+      }
+
+      .timeline {
+        position: relative;
+        margin: 20px 0;
+      }
+
+      .time-axis {
+        height: 2px;
+        background: #ddd;
+        position: relative;
+        margin: 40px 0;
+      }
+
+      .time-marker {
+        position: absolute;
+        width: 2px;
+        height: 20px;
+        background: #666;
+        top: -9px;
+      }
+
+      .time-label {
+        position: absolute;
+        top: 15px;
+        font-size: 12px;
+        color: #666;
+        transform: translateX(-50%);
+      }
+
+      .source {
+        margin: 30px 0;
+        padding: 20px;
+        border-radius: 10px;
+        position: relative;
+      }
+
+      .source1 {
+        background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
+        border-left: 5px solid #ff6b9d;
+      }
+
+      .source2 {
+        background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+        border-left: 5px solid #20b2aa;
+      }
+
+      .combine-result {
+        background: linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%);
+        border-left: 5px solid #ff8c00;
+      }
+
+      .source-title {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .emissions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        flex-wrap: wrap;
+      }
+
+      .emission {
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        font-weight: bold;
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      .emission.highlight {
+        background: #ffeb3b;
+        border-color: #ffc107;
+        transform: scale(1.1);
+        animation: pulse 0.8s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1.1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+
+      .explanation {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(79, 172, 254, 0.1);
+        border-left: 4px solid #4facfe;
+        border-radius: 5px;
+      }
+
+      .step {
+        margin: 15px 0;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+        border-left: 3px solid #666;
+      }
+
+      .step-time {
+        font-weight: bold;
+        color: #007acc;
+        font-size: 14px;
+      }
+
+      .step-detail {
+        margin: 8px 0;
+        font-size: 13px;
+        color: #555;
+      }
+
+      .rule-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        text-align: center;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .controls {
+        text-align: center;
+        margin: 30px 0;
+      }
+
+      button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 10px;
+        transition: transform 0.2s;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .current-state {
+        font-size: 18px;
+        text-align: center;
+        margin: 20px 0;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        border: 2px solid #4facfe;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="title">🔄 CombineLatest Behavior Visualization</div>
+
+      <div class="rule-box">
+        📝 RULE: combineLatest only emits when ALL sources have emitted at least
+        once,<br />
+        then emits whenever ANY source emits again
+      </div>
+
+      <div class="current-state" id="currentState">
+        ⏰ Time: 0ms - Waiting for all sources to emit...
+      </div>
+
+      <div class="source source1">
+        <div class="source-title">📡 source1$ = of('A', 'B', 'C')</div>
+        <div class="emissions" id="source1Emissions">
+          <div class="emission">Emits immediately at time 0</div>
+        </div>
+      </div>
+
+      <div class="source source2">
+        <div class="source-title">⏱️ source2$ = timer(1000, 1000)</div>
+        <div class="emissions" id="source2Emissions">
+          <div class="emission">Starts at 1000ms...</div>
+        </div>
+      </div>
+
+      <div class="source combine-result">
+        <div class="source-title">🎯 combineLatest([source1$, source2$])</div>
+        <div class="emissions" id="combineEmissions">
+          <div class="emission">No emissions yet...</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button onclick="startAnimation()">▶️ Start Animation</button>
+        <button onclick="resetAnimation()">🔄 Reset</button>
+      </div>
+
+      <div class="explanation">
+        <h3>🤔 Why does this happen?</h3>
+        <div class="step">
+          <div class="step-time">⏰ Time 0ms:</div>
+          <div class="step-detail">
+            • source1$ emits A, B, C immediately (synchronous)
+          </div>
+          <div class="step-detail">• source2$ hasn't emitted anything yet</div>
+          <div class="step-detail">
+            • combineLatest waits (needs ALL sources to have emitted)
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-time">⏰ Time 1000ms:</div>
+          <div class="step-detail">
+            • source1$ last value was C (stream completed)
+          </div>
+          <div class="step-detail">• source2$ emits 0 (first emission!)</div>
+          <div class="step-detail">• combineLatest NOW emits: [C, 0] ✅</div>
+        </div>
+
+        <div class="step">
+          <div class="step-time">⏰ Time 2000ms, 3000ms, etc.:</div>
+          <div class="step-detail">
+            • source1$ still C (completed streams keep last value)
+          </div>
+          <div class="step-detail">
+            • source2$ emits 1, 2, 3... (triggers new combinations)
+          </div>
+          <div class="step-detail">
+            • combineLatest emits: [C, 1], [C, 2], [C, 3]...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let timeStep = 0;
+      let animationInterval;
+
+      function updateState(
+        time,
+        source1Value,
+        source2Value,
+        combineValue,
+        status
+      ) {
+        document.getElementById(
+          "currentState"
+        ).innerHTML = `⏰ Time: ${time}ms - ${status}`;
+
+        if (source1Value) {
+          document.getElementById(
+            "source1Emissions"
+          ).innerHTML = `<div class="emission highlight">${source1Value}</div>`;
+        }
+
+        if (source2Value !== null) {
+          document.getElementById(
+            "source2Emissions"
+          ).innerHTML = `<div class="emission highlight">value ${source2Value}</div>`;
+        }
+
+        if (combineValue) {
+          document.getElementById(
+            "combineEmissions"
+          ).innerHTML = `<div class="emission highlight">${combineValue}</div>`;
+        }
+      }
+
+      function startAnimation() {
+        resetAnimation();
+        timeStep = 0;
+
+        // Time 0: source1 emits A, B, C
+        setTimeout(() => {
+          updateState(
+            0,
+            "A, B, C (immediately)",
+            null,
+            null,
+            "source1$ completed, source2$ not started yet - NO combineLatest emission"
+          );
+        }, 500);
+
+        // Time 1000: source2 emits 0
+        setTimeout(() => {
+          updateState(
+            1000,
+            "C (last value)",
+            0,
+            "[C, 0]",
+            "First combineLatest emission! Both sources have now emitted"
+          );
+        }, 2000);
+
+        // Time 2000: source2 emits 1
+        setTimeout(() => {
+          updateState(
+            2000,
+            "C (still)",
+            1,
+            "[C, 1]",
+            "source2$ emitted again, triggers new combination"
+          );
+        }, 3500);
+
+        // Time 3000: source2 emits 2
+        setTimeout(() => {
+          updateState(
+            3000,
+            "C (still)",
+            2,
+            "[C, 2]",
+            "Pattern continues: C stays same, source2$ keeps emitting"
+          );
+        }, 5000);
+
+        // Time 4000: source2 emits 3
+        setTimeout(() => {
+          updateState(
+            4000,
+            "C (still)",
+            3,
+            "[C, 3]",
+            "And so on... until takeUntil(timer(10000)) stops it"
+          );
+        }, 6500);
+      }
+
+      function resetAnimation() {
+        clearInterval(animationInterval);
+        timeStep = 0;
+
+        document.getElementById("currentState").innerHTML =
+          "⏰ Time: 0ms - Ready to start...";
+        document.getElementById("source1Emissions").innerHTML =
+          '<div class="emission">Ready...</div>';
+        document.getElementById("source2Emissions").innerHTML =
+          '<div class="emission">Ready...</div>';
+        document.getElementById("combineEmissions").innerHTML =
+          '<div class="emission">Ready...</div>';
+      }
+
+      // Auto-start animation when page loads
+      setTimeout(startAnimation, 1000);
+    </script>
+  </body>
+</html>
