@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Cursor Product Explorer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <link rel="stylesheet" href="style.css" />
+  <body>
+    <div class="cursor"></div>
+
+    <header class="header">
+      <h1><i class="fas fa-shopping-bag"></i> Product Explorer</h1>
+      <p>Discover amazing products with our custom cursor experience</p>
+
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="number"
+          class="search-input"
+          id="productSearch"
+          placeholder="Enter Product ID (1-100) to search..."
+          min="1"
+          max="100"
+        />
+      </div>
+    </header>
+
+    <main class="products-container">
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading products...</p>
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Failed to load products. Please try again.</p>
+      </div>
+
+      <div class="products-grid" id="productsGrid"></div>
+    </main>
+
+    <script>
+      // Custom Cursor Logic
+      const cursor = document.querySelector(".cursor");
+      const interactiveElements = document.querySelectorAll(
+        "input, button, .product-card, a"
+      );
+
+      document.addEventListener("mousemove", (e) => {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+      });
+
+      // Add hover effects for interactive elements
+      document.addEventListener("mouseover", (e) => {
+        if (e.target.matches("input, button, .product-card, a")) {
+          cursor.classList.add("hover");
+        }
+      });
+
+      document.addEventListener("mouseout", (e) => {
+        if (e.target.matches("input, button, .product-card, a")) {
+          cursor.classList.remove("hover");
+        }
+      });
+
+      // API Logic
+      const API_BASE = "https://dummyjson.com/products";
+      const productsGrid = document.getElementById("productsGrid");
+      const loading = document.getElementById("loading");
+      const errorMessage = document.getElementById("errorMessage");
+      const searchInput = document.getElementById("productSearch");
+
+      let debounceTimeout;
+
+      // Debounced search function
+      function debounceSearch(func, delay) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(func, delay);
+      }
+
+      // Show loading state
+      function showLoading() {
+        loading.style.display = "block";
+        errorMessage.style.display = "none";
+        productsGrid.style.opacity = "0.5";
+      }
+
+      // Hide loading state
+      function hideLoading() {
+        loading.style.display = "none";
+        productsGrid.style.opacity = "1";
+      }
+
+      // Show error message
+      function showError() {
+        errorMessage.style.display = "block";
+        hideLoading();
+      }
+
+      // Fetch products by ID
+      async function fetchProductById(id) {
+        try {
+          showLoading();
+          const response = await fetch(`${API_BASE}/${id}`);
+
+          if (!response.ok) {
+            throw new Error("Product not found");
+          }
+
+          const product = await response.json();
+          displayProducts([product]);
+          hideLoading();
+        } catch (error) {
+          console.error("Error fetching product:", error);
+          showError();
+        }
+      }
+
+      // Fetch all products
+      async function fetchAllProducts() {
+        try {
+          showLoading();
+          const response = await fetch(`${API_BASE}?limit=20`);
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch products");
+          }
+
+          const data = await response.json();
+          displayProducts(data.products);
+          hideLoading();
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          showError();
+        }
+      }
+
+      // Create product card HTML
+      function createProductCard(product) {
+        const stars =
+          "★".repeat(Math.floor(product.rating)) +
+          "☆".repeat(5 - Math.floor(product.rating));
+
+        return `
+                <div class="product-card">
+                    <img src="${product.thumbnail}" alt="${product.title}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-category"><i class="fas fa-tag"></i> ${product.category}</p>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">
+                            <span class="price">$${product.price}</span>
+                            <div class="rating">
+                                <span class="stars">${stars}</span>
+                                <span class="rating-text">(${product.rating})</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      // Display products in the grid
+      function displayProducts(products) {
+        productsGrid.innerHTML = products
+          .map((product) => createProductCard(product))
+          .join("");
+
+        // Add hover listeners to new product cards
+        const newCards = productsGrid.querySelectorAll(".product-card");
+        newCards.forEach((card) => {
+          card.addEventListener("mouseenter", () =>
+            cursor.classList.add("hover")
+          );
+          card.addEventListener("mouseleave", () =>
+            cursor.classList.remove("hover")
+          );
+        });
+      }
+
+      // Search input event listener with debouncing
+      searchInput.addEventListener("input", (e) => {
+        const value = e.target.value.trim();
+
+        debounceSearch(() => {
+          if (value === "") {
+            fetchAllProducts();
+          } else {
+            const productId = parseInt(value);
+            if (productId >= 1 && productId <= 100) {
+              fetchProductById(productId);
+            } else {
+              productsGrid.innerHTML =
+                '<div class="error-message" style="display: block;"><p>Please enter a valid Product ID (1-100)</p></div>';
+            }
+          }
+        }, 500);
+      });
+
+      // Initialize with all products
+      fetchAllProducts();
+
+      // Add smooth scroll behavior
+      document.documentElement.style.scrollBehavior = "smooth";
+
+      // Add some interactive particles effect on mouse move
+      document.addEventListener("mousemove", (e) => {
+        if (Math.random() > 0.98) {
+          createParticle(e.clientX, e.clientY);
+        }
+      });
+
+      function createParticle(x, y) {
+        const particle = document.createElement("div");
+        particle.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                width: 4px;
+                height: 4px;
+                background: rgba(0, 212, 255, 0.6);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1000;
+                animation: particleFloat 2s ease-out forwards;
+            `;
+
+        document.body.appendChild(particle);
+
+        setTimeout(() => {
+          particle.remove();
+        }, 2000);
+      }
+
+      // Add particle animation keyframes
+      const style = document.createElement("style");
+      style.textContent = `
+            @keyframes particleFloat {
+                0% {
+                    transform: translateY(0) scale(1);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100px) scale(0);
+                    opacity: 0;
+                }
+            }
+        `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>
