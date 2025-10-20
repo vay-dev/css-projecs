@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background: #f4f4f4;
+}
+
+button {
+  cursor: pointer !important;
+}
+
+.container {
+  width: 100%;
+  padding: 20px;
+  place-items: center;
+  display: grid;
+  row-gap: 20px;
+  /* magic line here */
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+
+  .card {
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background: white;
+
+    .card__header {
+      padding: 20px 20px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .card__logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          aspect-ratio: 1;
+          object-position: center;
+        }
+      }
+
+      .card__logo::after {
+        position: absolute;
+        content: "";
+        background: transparent;
+        border: 5px solid #000;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 2;
+        inset: -10px;
+      }
+
+      button {
+        outline: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #717171;
+        color: #717171;
+        font-size: 16px;
+        font-weight: 600;
+        background: transparent;
+        transition: all 0.3s ease-in-out;
+      }
+
+      button:hover {
+        transform: scale(0.98);
+        background: #ccc;
+      }
+    }
+
+    .card__body {
+      width: 100%;
+      margin-top: 20px;
+      padding: 10px 20px;
+
+      .title__block {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-start;
+        margin-block-end: 10px;
+
+        h1 {
+          font-size: 25px;
+          font-weight: 600;
+        }
+
+        p {
+          font-size: 12px;
+          color: #717171;
+        }
+      }
+
+      .card__profession {
+        font-size: 25px;
+        font-weight: 700;
+      }
+
+      .profession__options {
+        display: flex;
+        gap: 10px;
+
+        span {
+          padding: 7px 10px;
+          background: #d2d2d2;
+          color: black;
+          font-size: 14px;
+          border-radius: 10px;
+          display: grid;
+          place-items: center;
+        }
+      }
+    }
+
+    .card__footer {
+      margin-top: 5rem;
+      border-top: 1px solid rgba(74, 74, 74, 0.278);
+      width: 100%;
+      padding: 30px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .first__block {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 25px;
+        font-weight: 700;
+
+        span {
+          font-size: 16px;
+          color: #717171;
+        }
+      }
+
+      button {
+        padding: 7px 12px;
+        background: black;
+        color: white;
+        border-radius: 8px;
+      }
+    }
+  }
+}
